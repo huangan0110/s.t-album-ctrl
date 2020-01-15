@@ -10,10 +10,22 @@ module.exports = {
         // Paths
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
-        proxyTable: {},
+        proxyTable: {
+            '/': {
+                target: 'http://www.yan-wm.cn:10030',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/': ''
+                }
+            },
+            '/ws/*': {
+                target: 'http://www.yan-wm.cn:10030',
+                ws: true
+            }
+        },
 
         // Various Dev Server settings
-        // host: '192.168.0.1', // can be overwritten by process.env.HOST
+        // host: '192.168.2.250', // can be overwritten by process.env.HOST
         host: 'localhost', // can be overwritten by process.env.HOST
         port: 8000, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
         autoOpenBrowser: false,
@@ -44,13 +56,13 @@ module.exports = {
         // Paths
         assetsRoot: path.resolve(__dirname, '../dist'),
         assetsSubDirectory: 'static',
-        assetsPublicPath: '/',
+        assetsPublicPath: './',
 
         /**
          * Source Maps
          */
-
-        productionSourceMap: true,
+        //报错信息 关闭
+        productionSourceMap: false,
         // https://webpack.js.org/configuration/devtool/#production
         devtool: '#source-map',
 
@@ -58,7 +70,8 @@ module.exports = {
         // Surge or Netlify already gzip all static assets for you.
         // Before setting to `true`, make sure to:
         // npm install --save-dev compression-webpack-plugin
-        productionGzip: false,
+        //代码压缩 需nginx配合开启
+        productionGzip: true,
         productionGzipExtensions: ['js', 'css'],
 
         // Run the build command with an extra argument to

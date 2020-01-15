@@ -55,7 +55,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'index.html',
-      inject: true
+      inject: true,
+      favicon:'src/assets/icon/favicon.ico'
     }),
     // copy custom static assets
     new CopyWebpackPlugin([
@@ -93,3 +94,18 @@ module.exports = new Promise((resolve, reject) => {
     }
   })
 })
+
+// /*----------------jsonServer---------*/
+// /*引入json-server*/
+// const jsonServer = require('json-server')
+// /*搭建一个server*/
+// const apiServer = jsonServer.create()
+// /*将db.json关联到server*/
+// const apiRouter = jsonServer.router(path.join(__dirname,'db.json'));
+// const middlewares = jsonServer.defaults()
+// apiServer.use(middlewares)
+// apiServer.use(apiRouter)
+// /*监听端口*/
+// apiServer.listen(3000, () => {
+//   console.log('JSON Server is running')
+// })

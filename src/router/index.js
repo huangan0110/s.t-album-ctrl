@@ -1,63 +1,99 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Login from '@/components/Login/Login'
-import Home from '@/components/Home/Home'
-import DataStatistics from '@/components/DataStatistics/DataStatistics'
-import MemberList from '@/components/MemberList/MemberList'
-import PointManagement from '@/components/PointManagement/PointManagement'
-import SysMonitor from '@/components/SysMonitor/SysMonitor'
-import Level from '@/components/Level/Level'
-import SysLog from '@/components/SysLog/SysLog'
-import Wel from '@/components/Home/Wel/Wel'
+import Vue from "vue";
+import Router from "vue-router";
 
-Vue.use(Router)
+Vue.use(Router);
 
-export default new Router({
+const router = new Router({
+    // mode:'history',
+    // base:'/',
     routes: [{
-            path: '/login',
-            name: 'Login',
-            component: Login
+        path: "/login",
+        name: "Login",
+        component: resolve => require(['../components/Login/Login.vue'], resolve),
+    },
+    {
+        path: "/home",
+        name: "Home",
+        component: resolve => require(['../components/Home/Home.vue'], resolve),
+        meta: {
+            isLogin: true
         },
-        {
-            path: '/home',
-            name: 'Home',
-            component: Home,
-            children: [{
-                    path: '/data_statistics',
-                    name: 'DataStatistics',
-                    component: DataStatistics
-                },
-                {
-                    path: '/member_list',
-                    name: 'MemberList',
-                    component: MemberList
-                },
-                {
-                    path: '/point_management',
-                    name: 'PointManagement',
-                    component: PointManagement
-                },
-                {
-                    path: '/sys_monitor',
-                    name: 'SysMonitor',
-                    component: SysMonitor
-                },
-                {
-                    path: '/level',
-                    name: 'Level',
-                    component: Level
-                },
-                {
-                    path: '/sys_log',
-                    name: 'SysLog',
-                    component: SysLog
-                },
-                {
-                    path: '/wel',
-                    name: 'Wel',
-                    component: Wel
-                },
-            ]
-        }
+        children: [
+            {
+                path: "/admin_info",
+                name: "AdminInfo",
+                component: resolve => require(['../components/Home/AdminInfo/AdminInfo.vue'], resolve),
+            },
+            {
+                path: "/data_statistics",
+                name: "DataStatistics",
+                component: resolve => require(['../components/DataStatistics/DataStatistics.vue'], resolve),
+            },
+            {
+                path: "/member_list",
+                name: "MemberList",
+                component: resolve => require(['../components/MemberList/MemberList.vue'], resolve),
+            },
+            {
+                path: "/level",
+                name: "Level",
+                component: resolve => require(['../components/Level/Level.vue'], resolve),
+            },
+            {
+                path: "/sys_log",
+                name: "SysLog",
+                component: resolve => require(['../components/SysLog/SysLog.vue'], resolve),
+            },
+            {
+                path: "/menu_manage",
+                name: "MenuManage",
+                component: resolve => require(['../components/MenuManage/MenuManage.vue'], resolve),
+            },
+            {
+                path: "/service",
+                name: "Service",
+                component: resolve => require(['../components/Service/Service.vue'], resolve),
+            },
+            {
+                path: "/link",
+                name: "Link",
+                component: resolve => require(['../components/Link/Link.vue'], resolve),
+            },
+            {
+                path: "/wel",
+                name: "Wel",
+                component: resolve => require(['../components/Home/Wel/Wel.vue'], resolve),
+                meta: {
+                    isLogin: true
+                }
+            }
+        ]
+    }
     ]
-})
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.length === 0) {
+        next({
+            path: "/login"
+        });
+    } else {
+        if (to.matched.some(res => res.meta.isLogin)) {
+            if (localStorage.getItem('login')) {
+                next();
+            } else {
+                next({
+                    path: "/login",
+                    query: {
+                        redirect: to.fullPath
+                    }
+                });
+            }
+        } else {
+            next();
+        }
+    }
+
+});
+
+export default router;
