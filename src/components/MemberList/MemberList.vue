@@ -312,7 +312,7 @@ export default {
         }
         .el-table th,
         .el-table tr {
-            border: 1px solid #f1f1f1;
+            border: none;
         }
 
         .no-data {

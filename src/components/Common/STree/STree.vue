@@ -6,14 +6,12 @@
             highlight-current
             default-expand-all
             :expand-on-click-node="false"
-            :render-content="renderContent"
         >
         </el-tree>
     </div>
 </template>
 
 <script>
-import STreeTool from './STreeTool'
 export default {
     data() {
         const data = [
@@ -70,26 +68,19 @@ export default {
         };
     },
     methods: {
-        renderContent(h,{node,data,store}) {
-            return h(STreeTool,{
-                props: {
-                    NODE:node,
-                    DATA:data,
-                    STORE:store
-                }
-            })
-        }
+
     }
 };
 </script>
 
 <style scoped lang="scss">
+.st-tree >>> .el-tree {
+  padding: 20px;
+}
 .st-tree >>> .el-tree-node__content:hover .s-btn {
     display: inline-block;
 }
-.st-tree >>>.is-current .el-tree-node__content .s-label {
-    font-weight: 500;
-    white-space: normal;
-    color: pink;
+>>>.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+    background-color: #EDCFA1;
 }
 </style>
