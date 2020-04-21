@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <title id="title">{{title}}</title>
+</head>
+<body>
+<div id="ask"><!--vue不能控制body和html的标签-->
+    <ul>
+        <li v-for="v in list">
+            {{v.content}}
+        </li>
+    </ul>
+
+    <textarea v-model="content" cols="30" rows="10"></textarea>
+
+    <button v-on:click="push">发表</button>
+</div>
+<script>
+    var vue = function (options){new Vue(options)};
+    vue({
+        el:'#title',
+        data:{
+            title:'Vue 变异方法Push的留言板实例'
+        }
+    });
+    var app = vue({
+        el:'#ask',
+        data:{
+            content:'',
+            list:[
+                {'content':'hello'},
+                {'content':'简单记录'}
+            ]
+        },
+        methods:{
+            push(){
+                var content_push = {'content':this.content};
+                this.list.push(content_push);
+                this.content='';
+            }
+        }
+    });
+
+</script>
+</body>
+</html>
