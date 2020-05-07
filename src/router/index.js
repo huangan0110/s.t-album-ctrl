@@ -74,12 +74,19 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.length === 0) {
-        next({
-            path: "/login"
-        });
+        if(localStorage.getItem('access_token')) {
+            next({
+                path: "/home"
+            });
+        }else{
+            next({
+                path: "/login"
+            });
+        }
+
     } else {
         if (to.matched.some(res => res.meta.isLogin)) {
-            if (localStorage.getItem('login')) {
+            if (localStorage.getItem('access_token')) {
                 next();
             } else {
                 next({

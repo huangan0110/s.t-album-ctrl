@@ -23,11 +23,13 @@
 </template>
 
 <script>
-import { getLog } from "./../api/api";
+// import { getLog } from "./../api/api";
 export default {
     data() {
         return {
-            logData: []
+            logData: [
+                ""
+            ]
         };
     },
     mounted() {

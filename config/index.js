@@ -12,14 +12,14 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/': {
-                target: 'http://www.yan-wm.cn:10030',
+                target: 'http://www.yan-wm.cn:10000',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/': ''
                 }
             },
             '/ws/*': {
-                target: 'http://www.yan-wm.cn:10030',
+                target: 'http://www.yan-wm.cn:10000',
                 ws: true
             }
         },

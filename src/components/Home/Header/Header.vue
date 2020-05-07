@@ -187,7 +187,7 @@ export default {
     position: relative;
     height: 45px;
     width: 100%;
-    background-color: #000;
+    background:linear-gradient(to right,#545c64,#545c64,#111,#111) ;
     line-height: 45px;
 }
 .header p {
@@ -235,7 +235,7 @@ export default {
     right: 70px;
 }
 /* .person:hover {
-    	
+
 box-sizing: content-box;
     border-bottom: 3px solid #F56C6C;
 } */

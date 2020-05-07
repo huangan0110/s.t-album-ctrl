@@ -15,6 +15,7 @@
                             placeholder="请输入账号"
                             @focus="focus('item1')"
                             @blur="leave('item1')"
+                            v-model="userAccount"
                         />
                     </div>
                     <div class="item2" id="item2">
@@ -24,6 +25,8 @@
                             placeholder="请输入密码"
                             @focus="focus('item2')"
                             @blur="leave('item2')"
+                            v-model="password"
+                            ref="pass"
                         />
                         <i class="el-icon-view" @click="show_password()"></i>
                     </div>
@@ -31,7 +34,8 @@
                 <div class="bottom">
                     <el-checkbox v-model="autoLogin">两周内自动登录</el-checkbox>
                     <div class="login_btn">
-                        <el-button round @click="login">立即登录</el-button>
+                        <el-button round @click="login" v-if="!isLogin" >立即登录</el-button>
+                        <el-button round @click="login" v-if="isLogin" :loading="true" >登录中</el-button>
                     </div>
                 </div>
             </div>
@@ -40,16 +44,20 @@
 </template>
 
 <script>
+import {login} from "../api/api";
+
 export default {
     data() {
         return {
             autoLogin: false,
-            userAccount: "",
-            password: "",
+            userAccount: "yan_zt98@163.com",
+            password: "123456",
             show_eye: false,
             type: "password",
+            isLogin:false,
             bgcImg: {
-                height: "100%",
+                height: '100%',
+                position:'relative',
                 backgroundImage:
                     "url(" +
                     require("../../assets/img/login-bg-ctrl.jpg") +
@@ -60,8 +68,18 @@ export default {
     },
     methods: {
         login() {
-            this.$router.push('/home');
-            localStorage.setItem('login','true');
+            this.isLogin = true;
+            login(this.userAccount,this.password).then(res=>{
+                this.isLogin = false;
+                localStorage.setItem("access_token",res.data.access_token);
+                localStorage.setItem("refresh_token",res.data.refresh_token);
+                this.$router.push('/home');
+            }).catch(err=>{
+                this.$message.error('账号或密码错误!');
+                this.password = '';
+                this.$refs.pass.focus();
+                this.isLogin = false;
+            })
         },
         show_password() {
             if (this.type == "password") {
