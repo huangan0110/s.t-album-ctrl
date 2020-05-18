@@ -12,21 +12,21 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/': {
-                target: 'http://www.yan-wm.cn:10000',
+                target: 'http://39.105.137.236:10000',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/': ''
                 }
             },
             '/ws/*': {
-                target: 'http://www.yan-wm.cn:10000',
+                target: 'http://39.105.137.236:10000',
                 ws: true
             }
         },
 
         // Various Dev Server settings
-        // host: '192.168.2.250', // can be overwritten by process.env.HOST
-        host: 'localhost', // can be overwritten by process.env.HOST
+        host: '192.168.0.105', // can be overwritten by process.env.HOST
+        // host: 'localhost', // can be overwritten by process.env.HOST
         port: 8000, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
         autoOpenBrowser: false,
         errorOverlay: true,

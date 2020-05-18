@@ -19,7 +19,7 @@
                     <span class="iconfont ctrluser-plus" id="icon"></span>
                     <span id="number">新增用户量</span>
                     <div class="check">
-                        <el-radio-group v-model="viewsCheck" size="mini" @change="switchYM()">
+                        <el-radio-group v-model="userCheck" size="mini" @change="switchUser()">
                             <el-radio-button label="1">周</el-radio-button>
                             <el-radio-button label="2">月</el-radio-button>
                         </el-radio-group>
@@ -32,7 +32,7 @@
                     <span class="iconfont ctrlxiazai3" id="icon"></span>
                     <span id="number">下载量</span>
                     <div class="check">
-                        <el-radio-group v-model="viewsCheck" size="mini" @change="switchYM()">
+                        <el-radio-group v-model="downloadCheck" size="mini">
                             <el-radio-button label="1">周</el-radio-button>
                             <el-radio-button label="2">月</el-radio-button>
                         </el-radio-group>
@@ -52,26 +52,118 @@
 </template>
 
 <script>
+    import {getViews,getUserNum,getVipDistribution} from '../api/api'
 export default {
     data() {
         return {
             yData: [820, 932, 901, 934, 1290, 1330, 1320],
-            viewsCheck: 1
+            viewsCheck: 1,
+            userCheck:1,
+            downloadCheck:1,
+            viewsData:[],
+            vipData:[
+                { value: 0, name: "Lv.1" },
+                { value: 0, name: "Lv.2" },
+                { value: 0, name: "Lv.3" },
+                { value: 0, name: "Lv.4" },
+                { value: 0, name: "Lv.5" },
+                { value: 0, name: "Lv.6" },
+                { value: 0, name: "Lv.7" },
+                { value: 0, name: "Lv.8" },
+                { value: 0, name: "Lv.9" }
+            ]
         };
+    },
+    created() {
+
     },
     mounted() {
         var xData = [];
         for (var i = -6; i < 1; i++) {
             xData.push(this.getDay(i));
         }
-        this.drawLine("test1", "line", "访问量", this.yData, xData);
-        this.drawLine("test2", "bar", "新增用户量", this.yData, xData);
+
+        let viewsDataNumber = [];
+        let viewsDataDay = [];
+        getViews("1","2").then(res => {
+            for(let i=1; i<res.data.object.length; i++) {
+                viewsDataNumber.push(res.data.object[i].number);
+                viewsDataDay.push(res.data.object[i].time.slice(5,11))
+            }
+            this.drawLine("test1", "line", "访问量", viewsDataNumber,viewsDataDay );
+        })
+
+
+        let usersDataNumber = [];
+        let usersDataDay = [];
+        getUserNum("1","2").then(res => {
+            for(let i=1; i<res.data.object.length; i++) {
+                usersDataNumber.push(res.data.object[i].number);
+                usersDataDay.push(res.data.object[i].time.slice(5,11))
+            }
+            this.drawLine("test2", "line", "新增用户量", usersDataNumber,usersDataDay );
+        })
+
+        getVipDistribution().then(res=> {
+            for(let i=0; i<res.data.object.length; i++) {
+                switch (res.data.object[i].title) {
+                    case "Vip1":this.vipData[0].value = res.data.object[i].number;break;
+                    case "Vip2":this.vipData[1].value = res.data.object[i].number;break;
+                    case "Vip3":this.vipData[2].value = res.data.object[i].number;break;
+                    case "Vip4":this.vipData[3].value = res.data.object[i].number;break;
+                    case "Vip5":this.vipData[4].value = res.data.object[i].number;break;
+                    case "Vip6":this.vipData[5].value = res.data.object[i].number;break;
+                    case "Vip7":this.vipData[6].value = res.data.object[i].number;break;
+                    case "Vip8":this.vipData[7].value = res.data.object[i].number;break;
+                    case "Vip9":this.vipData[8].value = res.data.object[i].number;break;
+                }
+            }
+            this.drawCircle("test4");
+        })
+
+
         this.drawLine("test3", "line", "下载量", this.yData, xData);
-        this.drawCircle("test4");
     },
     methods: {
         switchYM() {
-            console.log("123");
+            let type = "1";
+            let month = "2";
+            if(this.viewsCheck == 1) {
+                type = "1";
+                month = "2";
+            }else{
+                type = "2";
+                month = "7";
+            }
+            let usersDataNumber = [];
+            let usersDataDay = [];
+            getViews(type,month).then(res => {
+                for(let i=1; i<res.data.object.length; i++) {
+                    usersDataNumber.push(res.data.object[i].number);
+                    usersDataDay.push(res.data.object[i].time)
+                }
+                this.drawLine("test1", "line", "访问量", usersDataNumber,usersDataDay );
+            })
+        },
+        switchUser() {
+            let type = "1";
+            let month = "2";
+            if(this.usersCheck == 1) {
+                type = "1";
+                month = "2";
+            }else{
+                type = "2";
+                month = "7";
+            }
+            let viewsDataNumber = [];
+            let viewsDataDay = [];
+            getUserNum(type,month).then(res => {
+                for(let i=1; i<res.data.object.length; i++) {
+                    viewsDataNumber.push(res.data.object[i].number);
+                    viewsDataDay.push(res.data.object[i].time)
+                }
+                this.drawLine("test2", "line", "访问量", viewsDataNumber,viewsDataDay );
+            })
         },
         getDay(day) {
             var today = new Date();
@@ -146,21 +238,11 @@ export default {
                 },
                 series: [
                     {
-                        name: "访问来源",
+                        name: "用户数量",
                         type: "pie",
                         radius: "55%",
                         center: ["60%", "50%"],
-                        data: [
-                            { value: 900, name: "Lv.1" },
-                            { value: 800, name: "Lv.2" },
-                            { value: 200, name: "Lv.3" },
-                            { value: 600, name: "Lv.4" },
-                            { value: 200, name: "Lv.5" },
-                            { value: 200, name: "Lv.6" },
-                            { value: 400, name: "Lv.7" },
-                            { value: 100, name: "Lv.8" },
-                            { value: 200, name: "Lv.9" }
-                        ]
+                        data: this.vipData
                     }
                 ]
             });

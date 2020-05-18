@@ -60,6 +60,11 @@ const router = new Router({
                 component: resolve => require(['../components/Link/Link.vue'], resolve),
             },
             {
+                path: "/registerCenter",
+                name: "RegisterCnter",
+                component: resolve => require(['../components/Link/RegisterCenter.vue'], resolve),
+            },
+            {
                 path: "/wel",
                 name: "Wel",
                 component: resolve => require(['../components/Home/Wel/Wel.vue'], resolve),

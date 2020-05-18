@@ -1,21 +1,6 @@
 <template>
     <div class="filter">
         <el-popover placement="right" trigger="manual" v-model="visible">
-            <div class="time-filter">
-                <span style="margin-left:5px;">注册时间</span>
-                <el-date-picker
-                    v-model="value2"
-                    type="daterange"
-                    align="right"
-                    unlink-panels
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :picker-options="pickerOptions"
-                    size="mini"
-                    class="input-class"
-                ></el-date-picker>
-            </div>
             <div class="level-filter">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <span>等级</span>

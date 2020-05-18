@@ -10,6 +10,10 @@ import Vuelidate from 'vuelidate'
 import './assets/icon/iconfont.css'
 import 'lib-flexible'
 import VueContextMenu from '@xunlei/vue-context-menu'
+import  qs from 'qs'
+
+
+Vue.prototype.$qs = qs
 
 Vue.use(Vuelidate) //安装插件
 Vue.use(VueContextMenu)

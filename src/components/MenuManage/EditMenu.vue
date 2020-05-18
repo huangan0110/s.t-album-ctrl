@@ -11,35 +11,34 @@
                 <table>
                     <tr>
                         <td>
-                            <span>*</span>菜单类型
+                            <span>*</span>权限名称
                         </td>
                         <td>
-                            <select name="public-choice" v-model="menuType" @change="getCouponSelected">
-                                <option value="1" >同级菜单</option>
-                                <option value="2" >下级菜单</option>
-                            </select>
+                            <input type="text" v-model="formData.name"/>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <span>*</span>菜单名称
+                            <span>*</span>网关前缀
                         </td>
                         <td>
-                            <input type="text" v-model="menuName"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>菜单链接</td>
-                        <td>
-                            <input type="text" v-model="menuUrl"/>
+                            <input type="text" v-model="formData.zuulPrefix"/>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <span>*</span>排序
+                            <span>*</span>服务前缀
                         </td>
                         <td>
-                            <input type="password" v-model="sort"/>
+                            <input type="text" v-model="formData.servicePrefix"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>*</span>权限链接
+                        </td>
+                        <td>
+                            <input type="text" v-model="formData.uri"/>
                         </td>
                     </tr>
                     <tr>
@@ -48,24 +47,41 @@
                         </td>
                         <td class="switch-td">
                             <el-switch
-                                v-model="status"
+                                v-model="formData.status"
                                 active-text="启用"
                                 inactive-text="禁用">
                             </el-switch>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <span>*</span>方法类型
+                        </td>
+                        <td>
+                            <select name="public-choice" v-model="formData.method" @change="getCouponSelected">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                            </select>
+                        </td>
+                    </tr>
+
                 </table>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="reset" size="mini">重置</el-button>
-                <el-button type="primary" @click="submit" size="mini">添加</el-button>
+                <el-button @click="reset" size="mini">取消</el-button>
+                <el-button type="primary" @click="submit" size="mini">保存</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 
 <script>
+    import {changeMenu} from "../api/api";
+
     export default {
+        created() {
+            console.log(this.editData)
+        },
         data() {
             return {
                 dialogVisible: false,
@@ -73,36 +89,60 @@
                 menuUrl: "",
                 sort: "",
                 status: true,
-                menuType:"1"
+                menuType: "1",
+                formData: {},
             };
         },
         methods: {
-            getCouponSelected() {},
-            open() {
+            getCouponSelected() {
+            },
+            deepCopy(obj1) {
+                let _obj = JSON.stringify(obj1);
+                let obj2 = JSON.parse(_obj);
+                return obj2;
+            },
+            open(data) {
+                console.log(data[0])
                 this.dialogVisible = true;
-            },
-            reset() {
-                this.menuName = "";
-                this.menuUrl = "";
-                this.sort = "";
-                this.status = "";
-            },
-            submit() {
-                if (this.menuName == "" || this.menuUrl == "" || this.sort == "") {
-                    this.$message.error("字段不能为空！");
-                }else{
-
+                this.formData = this.deepCopy(data[0]);
+                if (this.formData.status == 0) {
+                    this.formData.status = true;
+                } else {
+                    this.formData.status = false;
                 }
-            },
+            }
+            ,
+            reset() {
+                this.dialogVisible = false;
+            }
+            ,
+            submit() {
+                let postData = this.deepCopy(this.formData);
+                if (postData.status == true) {
+                    postData.status = 0;
+                } else {
+                    postData.status = 1;
+                }
+                changeMenu(postData).then(res => {
+                    if (res.data.success) {
+                        this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                        this.$emit('func2', true);
+                    }else{
+                        this.$message.error('修改失败');
+                    }
+                    this.dialogVisible = false;
+                })
+            }
+            ,
             handleClose() {
-                this.menuName = "";
-                this.menuUrl = "";
-                this.sort = "";
-                this.status = "";
                 this.dialogVisible = false;
             }
         }
-    };
+    }
+    ;
 </script>
 
 <style lang="scss">
@@ -124,12 +164,14 @@
             table span {
                 color: #ff0000;
             }
+
             table select {
                 height: 26px;
                 width: 100%;
                 border: none;
                 outline-color: transparent;
             }
+
             table input {
                 outline: none;
                 height: 24px;
@@ -153,6 +195,7 @@
             table tr {
                 height: 45px;
             }
+
             .switch-td span {
                 color: #666666;
             }

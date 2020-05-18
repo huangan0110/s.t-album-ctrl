@@ -54,7 +54,9 @@
 </template>
 
 <script>
-export default {
+    import {logout} from "../../api/api";
+
+    export default {
     data() {
         return {
             framShow: true,
@@ -72,6 +74,17 @@ export default {
                 this.$store.commit("setTitle", "个人信息");
                 this.$emit("open");
                 this.$router.push('/admin_info')
+            }else{
+                logout().then(res=>{
+                    if(res.data.success) {
+                        this.$message({
+                            message: '注销成功',
+                            type: 'success'
+                        });
+                    }
+                    localStorage.clear();
+                    this.$router.push('/login')
+                })
             }
         },
         setCollapse() {

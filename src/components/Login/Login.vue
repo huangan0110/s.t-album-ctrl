@@ -50,7 +50,7 @@ export default {
     data() {
         return {
             autoLogin: false,
-            userAccount: "yan_zt98@163.com",
+            userAccount: "1686313466@qq.com",
             password: "123456",
             show_eye: false,
             type: "password",

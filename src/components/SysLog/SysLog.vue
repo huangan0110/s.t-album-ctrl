@@ -9,10 +9,10 @@
                 <span v-for="(item, index) in logData" :key="index">
                     <span v-for="(row,index) in item.split(' ')" :key="index">
                         <span style="color:red;" v-if="index==0">{{row}}</span>
-                        <span style="color:red;" v-else-if="index==1">{{row}}</span>
-                        <span style="color:green;" v-else-if="index==3">{{row}}</span>
+                        <span style="color:cadetblue;" v-else-if="index==1">{{row}}</span>
+                        <span style="color:darkcyan;" v-else-if="index==3">{{row}}</span>
                         <span style="color:green;" v-else-if="index==5">{{row}}</span>
-                        <span style="color:green;" v-else-if="index==8">{{row}}</span>
+                        <span style="color:darkgoldenrod;" v-else-if="index==8">{{row}}</span>
                         <span v-else>{{row}}</span>
                     </span>
                     <br />

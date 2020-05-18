@@ -67,31 +67,24 @@ export default {
                     icon: "iconfont ctrlxitongguanli",
                     children: [
                         {
-                            title: "系统日志",
+                            title: "权限管理",
                             index: "2-1",
-                            path: "/sys_log"
+                            path: "/menu_manage"
                         },
                         {
-                            title: "菜单管理",
-                            index: "2-2",
-                            path: "/menu_manage"
-                        }
-                    ]
-                },
-                {
-                    title: "微服务管理",
-                    index: "3",
-                    icon: "iconfont ctrlxitongguanli",
-                    children: [
-                        {
                             title: "服务监控",
-                            index: "3-1",
+                            index: "2-2",
                             path: "/service"
                         },
                         {
                             title: "链路追踪",
-                            index: "3-2",
+                            index: "2-3",
                             path: "/link"
+                        },
+                        {
+                            title: "注册中心",
+                            index: "2-4",
+                            path: "/registerCenter"
                         }
                     ]
                 }

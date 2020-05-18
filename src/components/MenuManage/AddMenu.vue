@@ -11,35 +11,53 @@
                 <table>
                     <tr>
                         <td>
-                            <span>*</span>菜单类型
+                            <span>*</span>对比权限
                         </td>
                         <td>
-                            <select name="public-choice" v-model="menuType" @change="getCouponSelected">
-                                <option value="1" >同级菜单</option>
-                                <option value="2" >下级菜单</option>
+                            <input type="text" v-model="formData.oldName"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>*</span>对比关系
+                        </td>
+                        <td>
+                            <select name="public-choice" v-model="formData.relation">
+                                <option value="1">同级权限</option>
+                                <option value="2">下级权限</option>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <span>*</span>菜单名称
+                            <span>*</span>权限名称
                         </td>
                         <td>
-                            <input type="text" v-model="menuName"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>菜单链接</td>
-                        <td>
-                            <input type="text" v-model="menuUrl"/>
+                            <input type="text" v-model="formData.name"/>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <span>*</span>排序
+                            <span>*</span>网关前缀
                         </td>
                         <td>
-                            <input type="password" v-model="sort"/>
+                            <input type="text" v-model="formData.zuulPrefix"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>*</span>服务前缀
+                        </td>
+                        <td>
+                            <input type="text" v-model="formData.servicePrefix"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>*</span>权限链接
+                        </td>
+                        <td>
+                            <input type="text" v-model="formData.uri"/>
                         </td>
                     </tr>
                     <tr>
@@ -47,17 +65,29 @@
                             <span>*</span>状态
                         </td>
                         <td class="switch-td">
-                                <el-switch
-                                v-model="status"
+                            <el-switch
+                                v-model="formData.status"
                                 active-text="启用"
                                 inactive-text="禁用">
                             </el-switch>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <span>*</span>方法类型
+                        </td>
+                        <td>
+                            <select name="public-choice" v-model="formData.method" @change="getCouponSelected">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                            </select>
+                        </td>
+                    </tr>
+
                 </table>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="reset" size="mini">重置</el-button>
+                <el-button @click="reset" size="mini">取消</el-button>
                 <el-button type="primary" @click="submit" size="mini">添加</el-button>
             </span>
         </el-dialog>
@@ -65,6 +95,8 @@
 </template>
 
 <script>
+    import {changeMenu} from "../api/api";
+
     export default {
         data() {
             return {
@@ -73,33 +105,65 @@
                 menuUrl: "",
                 sort: "",
                 status: true,
-                menuType:"1"
+                menuType:"1",
+                formData: {
+                    olaName:"",
+                    status:"",
+                    sameP:"",
+                    nextP:""
+                },
             };
         },
         methods: {
             getCouponSelected() {},
-            open() {
+            deepCopy(obj1) {
+                let _obj = JSON.stringify(obj1);
+                let obj2 = JSON.parse(_obj);
+                return obj2;
+            },
+            open(data) {
                 this.dialogVisible = true;
+                this.formData.oldName = this.deepCopy(data[0]).name;
+                this.formData.status = true;
+                this.formData.sameP = this.deepCopy(data[0]).parentId;
+                this.formData.nextP = this.deepCopy(data[0]).id;
+
             },
             reset() {
-                this.menuName = "";
-                this.menuUrl = "";
-                this.sort = "";
-                this.status = "";
+                this.dialogVisible = false;
+                this.formData = {};
             },
             submit() {
-                if (this.menuName == "" || this.menuUrl == "" || this.sort == "") {
-                    this.$message.error("字段不能为空！");
-                }else{
-
+                let postData = this.deepCopy(this.formData);
+                if (postData.status == true) {
+                    postData.status = 0;
+                } else {
+                    postData.status = 1;
                 }
+                if(postData.relation == 1) {
+                    postData.parentId = postData.sameP;
+                }else{
+                    postData.parentId = postData.nextP;
+                }
+                console.log(postData);
+
+                changeMenu(postData).then(res=>{
+                    if (res.data.success) {
+                        this.$message({
+                            message: '添加成功',
+                            type: 'success'
+                        });
+                        this.$emit('func1', true);
+                    }else{
+                        this.$message.error('添加失败');
+                    }
+                    this.dialogVisible = false;
+                })
+
             },
             handleClose() {
-                this.menuName = "";
-                this.menuUrl = "";
-                this.sort = "";
-                this.status = "";
-                this.dialogVisible = false;
+                this.dialogVisible = false
+                this.formData = {};
             }
         }
     };

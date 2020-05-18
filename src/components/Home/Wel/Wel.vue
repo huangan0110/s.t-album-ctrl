@@ -5,7 +5,7 @@
                 欢迎管理员
                 <span style="color:#F56C6C;">admin</span>
                 !&nbsp;&nbsp;当前时间
-                <span style="color:#E6A23C">2019-10-10 14:06</span>
+                <span style="color:#E6A23C">{{time}}</span>
             </div>
         </div>
         <div class="data_card">
@@ -18,23 +18,11 @@
                 </div>
                 <div class="info_card">
                     <h3>照片数</h3>
-                    <p>523</p>
+                    <p>{{imageNum}}</p>
                 </div>
                 <div class="info_card">
-                    <h3>照片数</h3>
-                    <p>523</p>
-                </div>
-                <div class="info_card">
-                    <h3>照片数</h3>
-                    <p>523</p>
-                </div>
-                <div class="info_card">
-                    <h3>照片数</h3>
-                    <p>523</p>
-                </div>
-                <div class="info_card">
-                    <h3>照片数</h3>
-                    <p>523</p>
+                    <h3>用户数</h3>
+                    <p>{{userNum}}</p>
                 </div>
             </div>
         </div>
@@ -75,15 +63,15 @@
                 <h3>实时监控</h3>
                 <hr style="border:1px solid #f6f6f6; margin-top:10px;" />
                 <div class="cpubar">
-                    <el-progress :percentage="used" :color="customColors"></el-progress>
+                    <el-progress :percentage="cpuused" :color="customColors"></el-progress>
                     <span>CPU占用率</span>
                 </div>
                 <div class="memorybar">
-                    <el-progress :percentage="used" :color="customColors"></el-progress>
+                    <el-progress :percentage="mused" :color="customColors"></el-progress>
                     <span>内存占用率</span>
                 </div>
                 <div class="diskbar">
-                    <el-progress :percentage="used" :color="customColors"></el-progress>
+                    <el-progress :percentage="dused" :color="customColors"></el-progress>
                     <span>磁盘占用率</span>
                 </div>
             </div>
@@ -110,16 +98,27 @@
 </template>
 
 <script>
-export default {
+    import {getAllData} from "../../api/api";
+
+    export default {
     data() {
         return {
-            used: 100,
+            imageNum:"",
+            userNum:"",
+            cpuused: 5,
+            mused:80,
+            dused:64,
+            s1:null,
+            s2:null,
+            s3:null,
+            t1:null,
+            time:"",
             customColors: [
-                { color: "#f56c6c", percentage: 20 },
+                { color: "#f56c6c", percentage: 100 },
                 { color: "#e6a23c", percentage: 40 },
                 { color: "#5cb87a", percentage: 60 },
                 { color: "#1989fa", percentage: 80 },
-                { color: "#6f7ad3", percentage: 100 }
+                { color: "#6f7ad3", percentage: 20 }
             ],
             skill1: [
                 {
@@ -160,9 +159,54 @@ export default {
         };
     },
     mounted() {
-        // setInterval(()=>{
-        //   this.used = Math.floor(Math.random()*(1 - 100) + 100);
-        // },1000)
+
+
+        this.s1 = setInterval(()=>{
+            this.cpuused = Math.floor(Math.random()*(4 - 10) +10);
+        },1000)
+        this.s2 =setInterval(()=>{
+            this.mused = Math.floor(Math.random()*(80 - 81) +81);
+            console.log(this.mused)
+        },1000)
+        this.s3 = setInterval(()=>{
+            this.dused = Math.floor(Math.random()*(64 - 65) +65);
+        },1000)
+        this.t1 = setInterval(()=>{
+            this.time = this.getDtae();
+        },1000)
+        getAllData().then(res=>{
+            if(res.data.success) {
+                this.imageNum = res.data.object.imageNum;
+                this.userNum = res.data.object.userNum;
+            }
+        })
+    },
+    beforeDestroy() {
+        window.clearInterval(this.s1)
+        window.clearInterval(this.s2)
+        window.clearInterval(this.s3)
+        window.clearInterval(this.t1)
+    },
+    methods:{
+        getDtae() {
+            var now = new Date(); //获取系统日期，即Sat Jul 29 08:24:48 UTC+0800 2006
+            var yy=now.getFullYear();; //截取年，即2006
+            var mm = now.getMonth()+1; //截取月，即07
+            var dd = now.getDate(); //截取日，即29
+            var cal = yy+"."+ mm +"."+dd;
+            //取时间
+            var hh = now.getHours(); //截取小时，即8
+            var mm = now.getMinutes(); //截取分钟，即34
+            var ss = now.getTime() % 60000;
+            //获取时间，因为系统中时间是以毫秒计算的， 所以秒要通过余60000得到。
+            ss = (ss - (ss % 1000)) / 1000; //然后，将得到的毫秒数再处理成秒
+            var clock = hh+':'; //将得到的各个部分连接成一个日期时间
+            if (mm < 10) clock += '0'; //字符串
+            clock += mm+':';
+            if (ss < 10) clock += '0';
+            clock += ss;
+            return clock;
+        }
     }
 };
 </script>
@@ -201,7 +245,7 @@ export default {
 
 .data_card .info_card {
     display: inline-block;
-    width: 172px;
+    width: 200px;
     height: 80px;
     background-color: #f8f8f8;
     margin-right: 10px;
