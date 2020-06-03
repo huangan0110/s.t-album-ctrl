@@ -118,6 +118,8 @@ export default {
                     case "Vip9":this.vipData[8].value = res.data.object[i].number;break;
                 }
             }
+            console.log(this.vipData);
+            debugger;
             this.drawCircle("test4");
         })
 

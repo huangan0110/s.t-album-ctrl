@@ -18,7 +18,7 @@
         </div>
         <EditLevel ref="editLevel" :LData="levelData"></EditLevel>
         <el-dialog
-            title="等级特权"
+            title="角色授权"
             :visible.sync="dialogVisible"
             width="32%"
             :before-close="handleClose"

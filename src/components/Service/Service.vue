@@ -1,6 +1,6 @@
 <template>
     <iframe
-        src="http://39.105.137.236:8761/"
+        src="http://47.113.101.229:8084/#/wallboard"
         width="98%"
         height="95%"
         frameborder="0"

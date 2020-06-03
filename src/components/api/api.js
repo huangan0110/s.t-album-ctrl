@@ -2,6 +2,7 @@ import request from 'axios';
 import qs from 'qs'
 import {Message} from 'element-ui'
 import router from '../../router/index'
+// request.defaults.baseURL = 'http://39.105.137.236:10000'
 request.interceptors.request.use(function (config) {
     let token = window.localStorage.getItem("access_token")
     if (token) {
